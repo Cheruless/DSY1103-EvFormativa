@@ -2,23 +2,29 @@ package cl.duoc.sistematareas.controller;
 
 import cl.duoc.sistematareas.model.Task;
 import cl.duoc.sistematareas.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/v1/tareas")
+@RestController
+@RequestMapping("/api/v1/tareas")
 public class TaskController {
     @GetMapping
     public ResponseEntity<List<Task>> obtenerTareas(){
-        return ResponseEntity.status(HttpStatus.OK).body(TaskService.getTasks());
+        List<Task> tareasList = TaskService.getTasks();
+        return (!tareasList.isEmpty())
+                ? ResponseEntity.status(HttpStatus.OK).body(tareasList)
+                : ResponseEntity.status(HttpStatus.NO_CONTENT).body(tareasList);
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> crearTarea(@RequestBody Task tareaNueva){
-        return (TaskService.saveTask(tareaNueva)) ? ResponseEntity.status(HttpStatus.CREATED).body(true)
-                : ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(false);
+    public ResponseEntity<Boolean> crearTarea(@Valid @RequestBody Task tareaNueva){
+        return (TaskService.saveTask(tareaNueva))
+                ? ResponseEntity.status(HttpStatus.CREATED).body(true)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
     }
 
     @DeleteMapping("/{id}")

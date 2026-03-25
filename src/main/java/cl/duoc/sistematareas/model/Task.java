@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 public class Task {
 
     private int id;
-    @NotBlank
+    @NotBlank(message = "Título es obligatorio.")
     private String title;
-    @NotBlank
+    @NotBlank(message = "Descripción es obligatorio.")
     private String description;
     private boolean completed;
 }
